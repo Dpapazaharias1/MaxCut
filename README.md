@@ -1,2 +1,3 @@
-# MaxCut
-IE671: Nonlinear Optimization Final Project
+# Maximum Cut
+
+Final project for IE671: Nonlinear Optimization
