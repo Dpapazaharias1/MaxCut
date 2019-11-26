@@ -1,4 +1,5 @@
 import random
+import math
 from Graph import *
 
 class MaxCut_Heuristic:
@@ -18,7 +19,6 @@ class MaxCut_Heuristic:
         self.n = self.G.n
         self.m = self.G.m
         self.edges = sorted(self.G.edges, key = lambda x: x[2], reverse=True)
-        print(self.edges)
 
     def greedySolution(self):
         self.A = [0 for i in range(self.n)] # Assignment list
@@ -43,12 +43,13 @@ class MaxCut_Heuristic:
         self.bestWeight = self.currentWeight
         self.bestSolution = self.A[:]
     
+
     def __swap(self, i): # Computes change in objective from switching which part of the cut i belongs
         c = 0
         for u in self.G.adjLists[i]:
-            if self.A[i] == A[u]:
+            if self.A[i] == self.A[u]:
                 c += self.G.adjMatrix[i][u]
-            elif self.A[i] == -A[u]:
+            elif self.A[i] == -self.A[u]:
                 c -= self.G.adjMatrix[i][u]
         return c
 
@@ -58,8 +59,54 @@ class MaxCut_Heuristic:
         c = c_i + c_j + 2*self.G.adjMatrix[i][j] # i,j will still belong to separate components
         return c
 
-    def simulatedAnnealing(self):
-        pass
+    def __findCMax(self):
+        # Get worst possible swap
+        maxC = 0
+        for i in range(self.n):
+            for j in range(self.n):
+                if self.A[i] == -self.A[j]:
+                    cost = self.__calcChange(i,j)
+                    if cost < maxC:
+                        maxC = cost
+        return maxC
+
+    def __update(self, i, j, costChange):
+        self.currentWeight += costChange
+        self.A[i] = -self.A[i]
+        self.A[j] = -self.A[j]
+
+    def simulatedAnnealing(self, stopTemp=1, tempLength=1000, coolRate=0.99, cMaxAccept=-10):
+        # If A is empty, run greedy solution to get initial sol
+        if not self.A:
+            self.greedySolution()
+        
+        print("Initial Objective: {}".format(self.currentWeight))
+        print("Initial Solution: {}".format(self.A))
+        
+        cMax = self.__findCMax()
+        initialTemp = -cMax/math.log(-cMaxAccept)
+        currentTemp = initialTemp
+        V = [v for v in range(self.n) if self.A[v] != 0]
+        
+        while currentTemp > stopTemp:
+            for t in range(tempLength):
+                i = random.choice(V)
+                j = random.choice([v for v in V if self.A[v] == -self.A[i]])
+                costChange = self.__calcChange(i, j)
+                if costChange > 0:
+                    self.__update(i, j, costChange)
+                else:
+                    q = random.random()
+                    if q < math.exp(costChange/currentTemp):
+                        self.__update(i, j, costChange)
+                    else:
+                        pass # do nothing
+                if self.bestWeight < self.currentWeight:
+                    print("New incumbent: Swap ({},{}): DeltaC = {}, Best Sol = {}".format(i,j,costChange, self.currentWeight))
+                    print("Current Solution: {}".format(self.A))
+                    self.bestWeight = self.currentWeight
+                    self.bestSolution = self.A[:]
+            currentTemp = currentTemp * coolRate
 
 
 if __name__ == "__main__":
@@ -70,7 +117,7 @@ if __name__ == "__main__":
     instance = "../dat/Graph_instance_n_10_d_0.2_s_1.dat"
     H = MaxCut_Heuristic()
     H.initialize(instance)
-    H.greedySolution()
-    print(H.A)
-    print(H.currentWeight)
+    H.simulatedAnnealing()
+    print("Best Objective: {}".format(H.bestWeight))
+    print("Best Solution: {}".format(H.bestSolution))
             

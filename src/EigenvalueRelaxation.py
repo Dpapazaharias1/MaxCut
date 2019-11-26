@@ -1,5 +1,4 @@
 import numpy as np
-import os
 from Graph import *
 
 class EigenvalueRelaxation():
@@ -31,6 +30,7 @@ class EigenvalueRelaxation():
 
 
 if __name__ == "__main__":
+    import os
     abspath = os.path.abspath(__file__)
     dname = os.path.dirname(abspath)
     os.chdir(dname)
