@@ -1,7 +1,5 @@
 from gurobipy import *
 from Graph import *
-import os
-
 
 class MaxCut:
     G = Graph()
@@ -44,6 +42,7 @@ class MaxCut:
         self.model.optimize()
 
 if __name__ == "__main__":
+    import os
     abspath = os.path.abspath(__file__)
     dname = os.path.dirname(abspath)
     os.chdir(dname)

@@ -1,6 +1,7 @@
 class Graph:
     n = 0
     m = 0
+    edges = []
     adjLists = []
     adjWeight = []
     adjMatrix = []
@@ -27,6 +28,7 @@ class Graph:
             w_e = 1
             if len(fields) > 2:
                 w_e = float(fields[2])
+            self.edges.append((i,j,w_e))
             self.totWeight += abs(w_e)
             self.adjWeight[i].append(w_e)
             self.adjWeight[j].append(w_e)
