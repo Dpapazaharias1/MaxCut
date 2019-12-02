@@ -1,0 +1,103 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{dsfont}
+\usetikzlibrary{intersections, patterns, decorations, automata,positioning,trees,calc}
+\pgfplotsset{compat=newest}
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\title{Maximum Cut}
+\author{Demetrios V. Papazaharias, Carter Mann, Luca Wrabetz\\ \small Department of Industrial and Systems Engineering \\
+\small University at Buffalo, Bell Hall, Buffalo, New York, 14260\\\small $\lbrace \text{dvpapaza, cjmann3, lucawrab}\rbrace$@buffalo.edu}
+\date{November 2019}
+
+\theoremstyle{plain}
+\newtheorem{prop}{Proposition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{claim}{Claim}
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+    TODO
+\end{abstract}
+
+\clearpage
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\section{Introduction}\label{sec:Introduction}
+\section{Mathematical Formulations}\label{sec:Formulations}
+\section{Relaxations for Max Cut}\label{sec:Relaxations}
+\subsection{Eigenvalue Relaxation}\label{subsec:Eigenvalue}
+
+\begin{prop}
+The optimal value of $z^*$ in the maxcut problem defined on graph $G=(V,E)$ satisifes
+\[
+    z^* \leq z^{ev} := \dfrac{n}{4} \lambda_{max}(L(G))
+\]
+\end{prop}
+
+\begin{proof}
+From the previous section we saw that 
+\begin{equation}\label{eq:optimalZ}
+z^* = \frac{1}{4} \max_{\mathbf{z} \in \lbrace -1,1 \rbrace} \sum_{i \in V} \sum_{j \in V} w_{ij} (1 - z_i z_j) 
+\end{equation}
+Since $z_i \in \lbrace -1, 1 \rbrace$ it is clear that $z_i z_i = 1$. Then, we can express (\ref{eq:optimalZ}) as
+\begin{equation}
+\frac{1}{4} \max_{\mathbf{z} \in \lbrace -1,1 \rbrace} \sum_{i \in V} \sum_{j \in V} w_{ij} (z_i z_i - z_i z_j) 
+\end{equation}
+Rearranging these terms we see that 
+
+\begin{equation}\label{eq:optimalZ2}
+\frac{1}{4} \max_{\mathbf{z} \in \lbrace -1,1 \rbrace} \sum_{i \in V} z_i \left(\sum_{j \in V} w_{ij} \right) z_i - \sum_{i \in V} z_i \sum_{j \in V} w_{ij} z_j
+\end{equation}
+Recall that $D(G)_{ii} = \sum_{j \in V} w_{ij}$ and $D(G)_{ij} = 0$ for $i,j \in V$. The first term in (\ref{eq:optimalZ2}) can be expressed
+as $\mathbf{z}^\top D(G) \mathbf{z}$. Likewise, the weighted adjacency matrix $A(G)_{ii} = 0$ and $A(G)_{ij} = w_{ij}$ for
+$i,j \in V$. The second term can be expressed as $\mathbf{z}^\top A(G) \mathbf{z}$ and now
+\begin{equation}
+    \frac{1}{4} \max_{\mathbf{z} \in \lbrace -1, 1 \rbrace} \mathbf{z}^\top D(G) \mathbf{z} - \mathbf{z}^\top A(G) \mathbf{z}
+\end{equation}
+Since the matrix product is distributive we have
+\begin{equation}
+     \frac{1}{4} \max_{\mathbf{z} \in \lbrace -1, 1 \rbrace} \mathbf{z}^\top \left( D(G) - A(G) \right) \mathbf{z}
+\end{equation}
+By definition of the Laplacian of $G$ we have that the optimal solution of maxcut can be computed as
+\begin{equation}\label{eq:optimalZLaplace}
+    \frac{1}{4} \max \lbrace \mathbf{z}^\top L(G) \mathbf{z} \,|\, \mathbf{z} \in \lbrace -1,1 \rbrace \rbrace
+\end{equation}
+Taking the continuous relaxation of (\ref{eq:optimalZLaplace}), namely $z \in \left[-1,1 \right]$, is equivalent to maximizing
+over the $\norm{\mathbf{z}}_\infty = 1$. We can relax this further by maximizing over a ball of radius $\sqrt{n}$. In other words,
+our region is now defined where $\norm{\mathbf{z}} \leq \sqrt{n}$. 
+\begin{equation}
+z^* \leq \frac{1}{4} \max \lbrace \mathbf{z}^\top L(G) \mathbf{z} \,|\, \mathbf{z} \leq \sqrt{n} \rbrace
+\end{equation}    
+We can define our problem over the unit ball with a simple transformation. Let $\norm{\mathbf{z}} = \sqrt{n} \mathbf{y}$ and
+we now have
+\begin{equation}
+    z^* \leq \frac{n}{4} \max \lbrace \mathbf{y}^\top L(G) \mathbf{y} \,|\, \norm{\mathbf{y}} \leq 1 \rbrace
+\end{equation}  
+Since for any symmetric matrix $\mathbf{A}$, $\max\lbrace \mathbf{x}^\top \mathbf{A} \mathbf{x}\,|\, \norm{\mathbf{x}} \leq 1 \rbrace = \lambda_{\max(\mathbf{A})}$ 
+and $L(G)$ is symmetric, then we have 
+\begin{equation}
+z^* \leq z^{ev} := \dfrac{n}{4} \lambda_{max}(L(G))
+\end{equation}
+
+\end{proof}
+
+
+\end{document}

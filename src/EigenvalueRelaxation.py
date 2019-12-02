@@ -9,6 +9,7 @@ class EigenvalueRelaxation():
     D = 0 # Weighted "Degree" Matrix
     A = 0 # Weighted "Indicdence" Matrix
     eigenvalues = []
+    evMax = 0
     normEigenvectors =[]
 
     def initialize(self, inputfile):
@@ -27,7 +28,10 @@ class EigenvalueRelaxation():
 
     def getEigenvalues(self):
         self.eigenvalues, self.normEigenvectors = np.linalg.eig(self.L)
+        self.evMax = max(self.eigenvalues)
 
+    def getEigenvalueBound(self):
+        return self.n * self.evMax / 4.0
 
 if __name__ == "__main__":
     import os
@@ -38,5 +42,5 @@ if __name__ == "__main__":
     EV = EigenvalueRelaxation()
     EV.initialize(instance)
     EV.getEigenvalues()
-    print("Maximum eigenvalue: {}".format(max(EV.eigenvalues)))
-    
+    print("Maximum eigenvalue: {}".format(EV.evMax))
+    print("Eigenvalue bound: {}".format(EV.getEigenvalueBound()))
