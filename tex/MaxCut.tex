@@ -100,4 +100,46 @@ z^* \leq z^{ev} := \dfrac{n}{4} \lambda_{max}(L(G))
 \end{proof}
 
 
+\begin{prop}
+    The optimal value of $z^*$ in the maxcut problem defined on graph $G=(V,E)$ satisifes
+    \[
+        z^* \leq z^{ev} := - \frac{1}{4}\sum_{i=1}^n u_i + \dfrac{n}{4} \lambda_{max}(L(G) + diag(\mathbf{u}))
+    \]
+    for all $\mathbf{u} \in \mathbb{R}^n$
+\end{prop}
+
+\begin{proof}
+    Consider the maximization problem
+    \[
+        \max\lbrace \mathbf{z}^\top (L(G) + diag(\mathbf{u})) \mathbf{z} | \mathbf{z} \in \lbrace -1,1\rbrace \rbrace
+    \]
+    Note that no matter the value of $\mathbf{u} \in \mathbb{R}^n$ , $L(G) + diag(\mathbf{u})$ remains to be a symmetric square matrix. As a result,
+    \[
+        \lambda_{max}(L(G) + diag(\mathbf{u})) = \max\lbrace \mathbf{z}^\top (L(G) + diag(\mathbf{u})) \mathbf{z} | \mathbf{z} \in \lbrace -1,1\rbrace \rbrace
+    \]
+    Using the distributive property of the matrix product we can separate this into two separate maximization problems
+    \[
+        \max\lbrace \mathbf{z}^\top L(G) \mathbf{z} | \mathbf{z} \in \lbrace -1,1\rbrace \rbrace  +  \max\lbrace \mathbf{z}^\top diag(\mathbf{u}) \mathbf{z}\, |\, \mathbf{z} \in \lbrace -1,1\rbrace \rbrace
+    \] 
+    Expanding this further yields the optmization problem
+    \begin{equation}
+        \max_{\mathbf{z} \in \lbrace -1, 1\rbrace} \sum_{i = 1}^n \sum_{j=1}^n w_{ij} (1 - z_i z_j) + \sum_{i = 1} u_i \label{eq:eig2}
+    \end{equation}
+    Which is closely related to the objective function in our prevoius formulation. We can obtain a relationship between (\ref{eq:eig2}) and $z^*$:
+    \[
+      z^* = \frac{1}{4} \max\lbrace \mathbf{z}^\top (L(G) + diag(\mathbf{u})) \mathbf{z} \,|\, \mathbf{z} \in \lbrace -1,1\rbrace \rbrace - \frac{1}{4}\sum_{i=1}^n u_i   
+    \]
+    We repeat the process from the previous proof of relaxing the variables so that they are continuous and then further relaxing this problem onto a ball of radius $\sqrt{n}$.
+    \[
+        z^* \leq \frac{1}{4} \max\lbrace \mathbf{z}^\top (L(G) + diag(\mathbf{u})) \mathbf{z} \,|\, \norm{\mathbf{z}} \leq \sqrt{n} \rbrace - \frac{1}{4}\sum_{i=1}^n u_i
+    \]
+    Let $\mathbf{z} = \sqrt{n} \mathbf{x}$. 
+    \[
+        z^* \leq \frac{n}{4} \max\lbrace \mathbf{x}^\top (L(G) + diag(\mathbf{u})) \mathbf{x} \,|\, \norm{\mathbf{x}} \leq 1\rbrace - \frac{1}{4}\sum_{i=1}^n u_i
+    \]
+    Finally, we obtain the inequality
+    \begin{equation}
+        z^* \leq z^{ev}(\mathbf{u}) = -\sum_{i=1}^n u_i + \dfrac{n}{4} \lambda_{max}(L(G) + diag(\mathbf{u}))
+    \end{equation}
+\end{proof}
 \end{document}
