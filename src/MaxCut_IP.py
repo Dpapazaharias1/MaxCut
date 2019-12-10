@@ -14,10 +14,10 @@ class MaxCut:
         #---- Variables
         # TODO: Can we relax the binary variables for y's.
         for i in range(self.n):
-            self.x[i] = self.model.addVar(vtype=GRB.BINARY, obj = 0, name='vertex_{}'.format(i))
+            self.x[i] = self.model.addVar(vtype=GRB.BINARY, obj = 0, lb = 0, ub = 1, name='vertex_{}'.format(i))
             for j in self.G.adjLists[i]:
                 if i < j:
-                    self.y[i, j] = self.model.addVar(vtype=GRB.BINARY, obj = self.G.adjMatrix[i][j], name='edge_{}_{}'.format(i,j))
+                    self.y[i, j] = self.model.addVar(vtype=GRB.BINARY, obj = self.G.adjMatrix[i][j], lb = 0, ub = 1,  name='edge_{}_{}'.format(i,j))
         #---- Model Parameters
         self.model.modelSense = GRB.MAXIMIZE
         self.model.update()
@@ -38,7 +38,20 @@ class MaxCut:
         self.m = self.G.m
         self.__initializeModel()
 
+    def solveLP(self):
+        for i in range(self.n):
+            self.x[i].vtype = GRB.CONTINUOUS
+            for j in self.G.adjLists[i]:
+                if i < j:
+                    self.y[i,j].vtype = GRB.CONTINUOUS
+        self.model.optimize()
+        
     def solve(self):
+        for i in range(self.n):
+            self.x[i].vtype = GRB.BINARY
+            for j in self.G.adjLists[i]:
+                if i < j:
+                    self.y[i,j].vtype = GRB.BINARY
         self.model.optimize()
 
 if __name__ == "__main__":
