@@ -11,6 +11,9 @@ class EigenvalueRelaxation():
     eigenvalues = []
     evMax = 0
     normEigenvectors =[]
+    uVector = []
+    bigM = 1000
+    roe = 0.98
 
     def initialize(self, inputfile):
         self.G.read(inputfile)
@@ -33,6 +36,33 @@ class EigenvalueRelaxation():
     def getEigenvalueBound(self):
         return self.n * self.evMax / 4.0
 
+    def getlagrangianDual(self):
+        uSum = np.sum(self.uVector)
+        diagU = np.identity(self.n) * self.uVector
+        LUMatrix = self.L+ diagU
+        eigenvalues, normEigenvectors = np.linalg.eig(LUMatrix)
+        evMax = max(eigenvalues)
+        zEV = (-0.25)*uSum + ((self.n/4)*evMax)
+        return zEV, LUMatrix
+
+    def stepFunction(self):
+    	self.uVector = [0 for i in range(self.n)]
+    	self.uVector = np.array(self.uVector)
+    	gVector = [-0.25 for i in range(self.n)]
+    	gVector = np.array(gVector)
+    	#Main Loop
+    	for k in range(0,100):
+    		lagDual, LUMatrix = getlagrangianDual()
+    		diagLU = np.diag(LUMatrix)
+    		j = np.argmax(diagLU)
+    		gVector[j] = (self.n - 1)/4
+    		self.uVector = self.uVector - (self.bigM*(self.roe^k))*(np.divide(gVector,np.linalg.norm(gVector,2)))
+
+    	return lagDual
+
+
+
+
 if __name__ == "__main__":
     import os
     abspath = os.path.abspath(__file__)
@@ -44,3 +74,5 @@ if __name__ == "__main__":
     EV.getEigenvalues()
     print("Maximum eigenvalue: {}".format(EV.evMax))
     print("Eigenvalue bound: {}".format(EV.getEigenvalueBound()))
+    #----- Subgradient
+    print("LD Bound: {}".format(EV.stepFunction()))
