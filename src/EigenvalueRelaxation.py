@@ -12,7 +12,7 @@ class EigenvalueRelaxation():
     evMax = 0
     normEigenvectors =[]
     uVector = []
-    bigM = 1000
+    bigM = 50
     roe = 0.98
 
     def initialize(self, inputfile):
@@ -38,7 +38,7 @@ class EigenvalueRelaxation():
 
     def getlagrangianDual(self):
         uSum = np.sum(self.uVector)
-        diagU = np.identity(self.n) * self.uVector
+        diagU = np.identity(self.n) * np.diag(self.uVector)
         LUMatrix = self.L+ diagU
         eigenvalues, normEigenvectors = np.linalg.eig(LUMatrix)
         evMax = max(eigenvalues)
@@ -52,11 +52,11 @@ class EigenvalueRelaxation():
     	gVector = np.array(gVector)
     	#Main Loop
     	for k in range(0,100):
-    		lagDual, LUMatrix = getlagrangianDual()
+    		lagDual, LUMatrix = self.getlagrangianDual()
     		diagLU = np.diag(LUMatrix)
     		j = np.argmax(diagLU)
     		gVector[j] = (self.n - 1)/4
-    		self.uVector = self.uVector - (self.bigM*(self.roe^k))*(np.divide(gVector,np.linalg.norm(gVector,2)))
+    		self.uVector = self.uVector - (self.bigM*(self.roe**k))*(np.divide(gVector,np.linalg.norm(gVector,2)))
 
     	return lagDual
 
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     abspath = os.path.abspath(__file__)
     dname = os.path.dirname(abspath)
     os.chdir(dname)
-    instance = "../dat/Graph_instance_n_10_d_0.2_s_1.dat"
+    instance = "../dat/Graph_instance_n_50_d_0.8_s_1.dat"
     EV = EigenvalueRelaxation()
     EV.initialize(instance)
     EV.getEigenvalues()

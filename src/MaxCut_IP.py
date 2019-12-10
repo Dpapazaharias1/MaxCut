@@ -59,7 +59,7 @@ if __name__ == "__main__":
     abspath = os.path.abspath(__file__)
     dname = os.path.dirname(abspath)
     os.chdir(dname)
-    instance = "../dat/Graph_instance_n_10_d_0.2_s_1.dat"
+    instance = "../dat/Graph_instance_n_50_d_0.8_s_1.dat"
     MC = MaxCut()
     MC.initialize(instance)
     MC.solve()

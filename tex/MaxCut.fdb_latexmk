@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1576007421 "/home/demetriosp/Projects/MaxCut/tex/MaxCut.tex" "/home/demetriosp/Projects/MaxCut/tex/MaxCut.pdf" "MaxCut" 1576007425
-  "/home/demetriosp/Projects/MaxCut/tex/MaxCut.aux" 1576007424 1839 c01716cbee6684b5cca301cd4403863f ""
-  "/home/demetriosp/Projects/MaxCut/tex/MaxCut.tex" 1576007421 7178 b5b45176ea85437f48f311bf046ef39e ""
+["pdflatex"] 1576011939 "/home/demetriosp/Projects/MaxCut/tex/MaxCut.tex" "/home/demetriosp/Projects/MaxCut/tex/MaxCut.pdf" "MaxCut" 1576011947
+  "/home/demetriosp/Projects/MaxCut/tex/MaxCut.aux" 1576011945 1839 c01716cbee6684b5cca301cd4403863f ""
+  "/home/demetriosp/Projects/MaxCut/tex/MaxCut.tex" 1576011938 7621 d38d0c254df76f6deb4f366564287bcb ""
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1572595918 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/share/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1572595918 1004 54797486969f23fa377b128694d548df ""
   "/usr/share/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1572595918 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -200,13 +200,13 @@
   "/usr/share/texmf-dist/web2c/texmf.cnf" 1572595918 33301 a3134070eacafb10b1f371612ce2650d ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1573825104 4572998 f9631eebba48c3ee98e5d310044b0a09 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1573825091 8044940 20be808be702f3098e3f63ef68bf646f ""
-  "MaxCut.aux" 1576007424 1839 c01716cbee6684b5cca301cd4403863f "pdflatex"
-  "MaxCut.out" 1576007424 299 48440c67d1839fe6bc46de2b2a2f7e96 "pdflatex"
-  "MaxCut.tex" 1576007421 7178 b5b45176ea85437f48f311bf046ef39e ""
+  "MaxCut.aux" 1576011945 1839 c01716cbee6684b5cca301cd4403863f "pdflatex"
+  "MaxCut.out" 1576011945 299 48440c67d1839fe6bc46de2b2a2f7e96 "pdflatex"
+  "MaxCut.tex" 1576011938 7621 d38d0c254df76f6deb4f366564287bcb ""
   (generated)
-  "MaxCut.log"
-  "MaxCut.pdf"
   "MaxCut.out"
-  "MaxCut.aux"
-  "/home/demetriosp/Projects/MaxCut/tex/MaxCut.pdf"
   "/home/demetriosp/Projects/MaxCut/tex/MaxCut.log"
+  "/home/demetriosp/Projects/MaxCut/tex/MaxCut.pdf"
+  "MaxCut.pdf"
+  "MaxCut.log"
+  "MaxCut.aux"

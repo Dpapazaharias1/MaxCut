@@ -10,6 +10,7 @@
 \usepackage{enumitem}
 \usepackage{hyperref}
 \usepackage{dsfont}
+\usepackage[ruled,vlined]{algorithm2e}
 \usetikzlibrary{intersections, patterns, decorations, automata,positioning,trees,calc}
 \pgfplotsset{compat=newest}
 
@@ -32,6 +33,9 @@
 \theoremstyle{definition}
 \newtheorem{defn}{Definition}
 
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 \begin{document}
 \maketitle
 \begin{abstract}
@@ -39,7 +43,6 @@
 \end{abstract}
 
 \clearpage
-\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 \section{Introduction}\label{sec:Introduction}
 \section{Mathematical Formulations}\label{sec:Formulations}
 \section{Relaxations for Max Cut}\label{sec:Relaxations}
@@ -106,10 +109,7 @@ The optimal value of $z^*$ in the maxcut problem defined on graph $G=(V,E)$ sati
     \begin{equation}\label{eq:propopt2}
         \max\lbrace \mathbf{z}^\top (L(G) + diag(\mathbf{u})) \mathbf{z} | \mathbf{z} \in \lbrace -1,1\rbrace \rbrace
     \end{equation}
-    Note that no matter the value of $\mathbf{u} \in \mathbb{R}^n$ , $L(G) + diag(\mathbf{u})$ remains to be a symmetric square matrix. As a result,
-    \[
-        \lambda_{max}(L(G) + diag(\mathbf{u})) = \max\lbrace \mathbf{z}^\top (L(G) + diag(\mathbf{u})) \mathbf{z} | \mathbf{z} \in \lbrace -1,1\rbrace \rbrace 
-    \]
+   
     From the previous proof, we perform a similar technique to (\ref{eq:propopt2}) to obtain the following optimization problem 
     \[
     \max_{\mathbf{z} \in \lbrace -1,1 \rbrace} \sum_{i \in V}\left(\sum_{j \in V} w_{ij} + u_i \right) z_i z_i - \sum_{i \in V}\sum_{j \in V} w_{ij}z_i z_j
@@ -140,9 +140,35 @@ The optimal value of $z^*$ in the maxcut problem defined on graph $G=(V,E)$ sati
 
 In the previous section we have proved several upper bounds on max cut based on the Laplace $L(G)$, including one which changes of the diagonal of $L(G)$ with some vector $\mathbf{u} \in \mathbb{R}^n$. In this section we will
 compute the Lagrangian dual bound of maximum cut, which corresponds to the values of $\mathbf{u}$ such that $z^{ev}(\mathbf{u})$ is minimized.
-
 \[
     z^{LD} = \min\Bigg\lbrace -\frac{1}{4}\sum_{i=1}^n u_i + \dfrac{n}{4} \lambda_{max}(L(G) + diag(\mathbf{u})) \,\Bigg|\, \mathbf{u} \in \mathbb{R}^n \Bigg\rbrace
 \]
-  
+Consider the gradient of our objective function, $\nabla z^{ev}(\mathbf{u})$. In order to compute $\nabla \lambda_{max}(L(G) + diag(\mathbf{u}))$ we first use the fact that $L(G) + diag(\mathbf{u})$ is a symmetric square matrix and therefore $\lambda_{max}(L(G) + diag(\mathbf{u})) = \max\lbrace \mathbf{x}^\top (L(G) + diag(\mathbf{u})) \mathbf{x} \,|\,\norm{\mathbf{x}} \leq 1\rbrace$. This optimization problem can further be expanaded to
+\[
+\max_{\norm{\mathbf{x}} \leq 1} \sum_{i \in V} \left(\sum_{j \in V} w_{ij} + u_i \right) x_i x_i - \sum_{i \in V} \sum_{j\in V} w_{ij}x_i x_j 
+\]
+We can see that this objective value is maximized for $x_k = 1$ where $k = \argmax_i\large\lbrace \sum_{j \in V} w_{ij} + u_i \, |\, \sum_{j \in V} w_{ij} + u_i  > 0\large\rbrace$, and $x_i = 0$ for $i \in V \setminus \lbrace k \rbrace$. If there exists no positive value of  $\sum_{j \in V} w_{ij} + u_i $ then the objective function is maximized for $\mathbf{x} = \mathbf{0}$. Therefore, $\nabla \lambda_{max}(L(G) + diag(\mathbf{u})) = e_k$ if $ \lambda_{max}(L(G) + diag(\mathbf{u}))  \geq 0$ and $\mathbf{0}$ otherwise and  $\nabla z^{ev}(\mathbf{u})$ can be computed as
+\[
+ \nabla z^{ev}(\mathbf{u})_k = \begin{cases}
+ \frac{n-1}{4} \quad& \text{if }k =\argmax_i\Big\lbrace \sum_{j \in V} w_{ij} + u_i  \,\Big|\, \sum_{j \in V} w_{ij} + u_i  > 0\Big\rbrace\\
+ -\frac{1}{4} \quad&\text{otherwise}
+ \end{cases}
+\]
+\subsubsection{Subgradient Algorithm}\label{subsubsec:Subgradient}
+
+We implement the following subgradient algorithm in order to compute $z^{LD}$. We postpone details on our implementation decisions such as stopping criteria, initial solutions and choice of sequence $h_k$ for a later section.
+
+\vspace{0.2cm}
+
+\begin{algorithm}[H]
+	\SetAlgoLined
+	\KwResult{Computes the Lagrangian dual bound $z^{LD}$}
+	Select an initial solution $\mathbf{u}_0$ and appropriate sequence $\lbrace h_k \rbrace_{k=0}^\infty$\;
+	\For{$k \geq 0$}{
+		Compute $z^{ev}(\mathbf{u})$ and $\nabla z^{ev}(\mathbf{u})$\;
+		$\mathbf{u}_{k+1} \gets \mathbf{u}_k - h_k \frac{\nabla z^{ev}(\mathbf{u})}{ \norm{\nabla z^{ev}(\mathbf{u})}}$\;
+	}
+	\caption{Subgradient Algorithm for MaxCut}
+\end{algorithm}
+
 \end{document}
