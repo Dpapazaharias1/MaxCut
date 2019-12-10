@@ -132,7 +132,17 @@ The optimal value of $z^*$ in the maxcut problem defined on graph $G=(V,E)$ sati
     \]
     Finally, we obtain the inequality
     \begin{equation}
-        z^* \leq z^{ev}(\mathbf{u}) = -\sum_{i=1}^n u_i + \dfrac{n}{4} \lambda_{max}(L(G) + diag(\mathbf{u}))
+        z^* \leq z^{ev}(\mathbf{u}) = -\frac{1}{4}\sum_{i=1}^n u_i + \dfrac{n}{4} \lambda_{max}(L(G) + diag(\mathbf{u}))
     \end{equation}
 \end{proof}
+    
+\subsection{Lagrangian Dual}\label{subsec:LDbound}
+
+In the previous section we have proved several upper bounds on max cut based on the Laplace $L(G)$, including one which changes of the diagonal of $L(G)$ with some vector $\mathbf{u} \in \mathbb{R}^n$. In this section we will
+compute the Lagrangian dual bound of maximum cut, which corresponds to the values of $\mathbf{u}$ such that $z^{ev}(\mathbf{u})$ is minimized.
+
+\[
+    z^{LD} = \min\Bigg\lbrace -\frac{1}{4}\sum_{i=1}^n u_i + \dfrac{n}{4} \lambda_{max}(L(G) + diag(\mathbf{u})) \,\Bigg|\, \mathbf{u} \in \mathbb{R}^n \Bigg\rbrace
+\]
+  
 \end{document}
