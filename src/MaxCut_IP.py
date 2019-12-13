@@ -8,7 +8,7 @@ class MaxCut:
     model = 0
     y = {}
     x = {}
-    
+
     def __initializeModel(self):
         self.model = Model("MaxCut")
         #---- Variables
@@ -19,6 +19,7 @@ class MaxCut:
                 if i < j:
                     self.y[i, j] = self.model.addVar(vtype=GRB.BINARY, obj = self.G.adjMatrix[i][j], lb = 0, ub = 1,  name='edge_{}_{}'.format(i,j))
         #---- Model Parameters
+        self.model.TimeLimit = 600 # Set 10 minute limit
         self.model.modelSense = GRB.MAXIMIZE
         self.model.update()
         #---- Constraints
@@ -45,7 +46,7 @@ class MaxCut:
                 if i < j:
                     self.y[i,j].vtype = GRB.CONTINUOUS
         self.model.optimize()
-        
+
     def solve(self):
         for i in range(self.n):
             self.x[i].vtype = GRB.BINARY
@@ -59,7 +60,7 @@ if __name__ == "__main__":
     abspath = os.path.abspath(__file__)
     dname = os.path.dirname(abspath)
     os.chdir(dname)
-    instance = "../dat/Graph_instance_n_50_d_0.8_s_1.dat"
+    instance = "../dat/Graph_instance_n_100_d_0.2_s_1.dat"
     MC = MaxCut()
     MC.initialize(instance)
     MC.solve()

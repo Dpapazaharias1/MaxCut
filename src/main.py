@@ -15,6 +15,16 @@ if __name__ == "__main__":
         MC = MaxCut()
         MC.initialize(inputfile)
         MC.solve()
+        if os.path.exists('./results/IPSol.csv'):
+            with open('./results/IPSol.csv', 'a') as csvfile:
+                writer = csv.writer(csvfile, delimiter = ',')
+                writer.writerow([nodes, density, seed, MC.model.objval, MC.model.objBound, MC.model.MIPGap, MC.model.Runtime])
+        else:
+            with open('./results/IPSol.csv', 'a') as csvfile:
+                writer = csv.writer(csvfile, delimiter = ',')
+                writer.writerow(['n', 'd', 's', 'best', 'bound', 'gap', 'time(s)'])
+                writer.writerow([nodes, density, seed, MC.model.objval, MC.model.objBound, MC.model.MIPGap, MC.model.Runtime])
+
     elif sys.argv[1] == "LP":
         from MaxCut_IP import MaxCut
         print("Solving Max Cut LP Relaxation:")
@@ -46,6 +56,15 @@ if __name__ == "__main__":
         MCH = MaxCut_Heuristic()
         MCH.initialize(inputfile)
         MCH.simulatedAnnealing()
+        if os.path.exists('./results/HeuristicSol.csv'):
+            with open('./results/HeuristicSol.csv', 'a') as csvfile:
+                writer = csv.writer(csvfile, delimiter = ',')
+                writer.writerow([nodes, density, seed, MCH.stopTemp, MCH.tempLength, MCH.coolRate, MCH.cMaxAccept, MCH.bestWeight, MCH.bestTime, MCH.Runtime])
+        else:
+            with open('./results/HeuristicSol.csv', 'a') as csvfile:
+                writer = csv.writer(csvfile, delimiter = ',')
+                writer.writerow(['n', 'd', 's','stopTemp', 'tempLength', 'coolRate', 'cMax', 'solution', 'Soltime(s)','Runtime(s)'])
+                writer.writerow([nodes, density, seed, MCH.stopTemp, MCH.tempLength, MCH.coolRate, MCH.cMaxAccept, MCH.bestWeight, MCH.bestTime, MCH.Runtime])
 
     else:
         print("No solution method selected")
