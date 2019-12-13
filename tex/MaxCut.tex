@@ -44,12 +44,33 @@
 
 \clearpage
 \section{Introduction}\label{sec:Introduction}
+The maximum cut problem (maxcut) is a classical problem in combinatorial optimization in which we are given a graph $G = (V, E)$, with node set $V = \lbrace 1,...,n \rbrace$ and edge set $E = \lbrace i, j \rbrace \subseteq \binom{V}{2}$. We are also given, for each edge $\{i, j\} \in E$, a non-negative weight $w_{ij}$ . The maxcut problem consists in determining a subset of $S \subseteq V$ nodes for which the sum of the weights of the edges that cross from $S$ to its complement $\bar{S}$ (i.e., the weight of the edges in the cut $(S, \bar{S})$ is maximized. In this particular case, we are assuming that the edges are undirected; however, this problem can be easily generalized to the directed case.
+
+Unlike the minimization variant to this problem, which can be solved in polynomial time, the maxcut problem is NP-Hard. Given its nature, the maxcut problem is a highly studied problem in Graph Theory. Although no polynomial algorithm exists to solve maxcut (Unless we discover $P = NP$) a multitude of approximation algorithms and heuristics have been developed in an attempt to solve this problem to a relative level of optimality. One simplistic method is a local search algorithm, which starts with an arbitrary set $S$ and then iteratively either adds or removes an edge, as long as it helps the objective function. A more complex method would be the Goemans and Williamson algorithm, which  combines semi-definite programming and a rounding procedure to produce an approximate solution to the max-cut problem.
+
+In this paper we will focus our attention on IP formulations to the maxcut, along with a variety of relaxations and a heuristic which will help us find upper and lower bounds respectively. In section 2 we will discuss two separate formulations to the maxcut. Section 3 will feature a variety of relaxations to the maxcut, which will help us find upper bounds to our problem.  Section 4 will discuss a heuristic which utilizes two-swap simulated annealing approach to find a sufficient lower bound to our problem.  Section 5 will display the computational analysis for our study, and finally section 6 will be the conclusion to our findings.
 \section{Mathematical Formulations}\label{sec:Formulations}
+\subsection{Formulation 1}\label{subsec:Formulation1}
+In this formulation, we define binary variables $x_{i}$ for each $i \in V$ that indicate whether node $i$ belongs to $S$. we also define the binary variables $y_{ij}$ to indicate whether edge $\lbrace ij \rbrace$ is part of the cut.
+Using these variables, we can formulate this problem as follows:
+\begin{align}
+     z^* = \max \sum_{i,j \in E} w_{ij}y_{ij} \\st.\quad y_{ij} \leq 2 - x_i - x_j,\quad \lbrace ij \rbrace \in E \\ y_{ij} \leq x_i + x_j,\quad \lbrace ij \rbrace \in E \\ y_{ij} \geq x_i - x_j,\quad \lbrace ij \rbrace \in E \\ y_{ij} \geq x_j - x_i,\quad \lbrace ij \rbrace \in E \\ x_i \in \lbrace 0,1 \rbrace, \quad \quad \quad i \in V \\ y_{ij} \in \lbrace 0,1 \rbrace, \quad \lbrace i,j \rbrace \in E
+\end{align}
+where constraint (2) imposes that if both ends of an edge are in $S$, this edge is not in the cut, (3) imposes that if both ends are in $\bar{S}$, this edge is not in the cut, (4) and (5) impose that if the ends of this edge are in different sets, this edge is in the cut, and (6) and (7) define the domain of the variables.  In our study, we run this formulation using Gurobi and terminate with an optimality gap after 500 seconds of runtime.
+
+\subsection{Formulation 2}\label{subsec:Forulation2}
+In this formulation, we define variables $z_i$ for each $i \in V$ to take the value of $-1$ if $i \in S$ and $1$ if $i \notin S$. Using these variables, we can formulate this problem as follows:
+\begin{align}
+     z^* = \frac{1}{4}\max \sum_{i \in V} \sum_{j \in V} w_{ij} (1 - z_i z_j) \\ st.\quad z_i \in \lbrace -1,1 \rbrace, \quad \quad i \in V 
+\end{align}
+
+
+
 \section{Relaxations for Max Cut}\label{sec:Relaxations}
 \subsection{Eigenvalue Relaxation}\label{subsec:Eigenvalue}
 
 \begin{prop}
-The optimal value of $z^*$ in the maxcut problem defined on graph $G=(V,E)$ satisifes
+The optimal value of $z^*$ in the maxcut problem defined on graph $G=(V,E)$ satisfies
 \[
     z^* \leq z^{ev} := \dfrac{n}{4} \lambda_{max}(L(G))
 \]
@@ -163,7 +184,7 @@ We implement the following subgradient algorithm in order to compute $z^{LD}$. W
 \begin{algorithm}[H]
 	\SetAlgoLined
 	\KwResult{Computes the Lagrangian dual bound $z^{LD}$}
-	Select an initial solution $\mathbf{u}_0$ and appropriate sequence $\lbrace h_k \rbrace_{k=0}^\infty$\;
+	Select an initial solution $\mathbf{u}_0$ and appropriate sequence $\lbrace h_k \rbrace_{k=0}^\infty$\;
 	\For{$k \geq 0$}{
 		Compute $z^{ev}(\mathbf{u})$ and $\nabla z^{ev}(\mathbf{u})$\;
 		$\mathbf{u}_{k+1} \gets \mathbf{u}_k - h_k \frac{\nabla z^{ev}(\mathbf{u})}{ \norm{\nabla z^{ev}(\mathbf{u})}}$\;
@@ -171,4 +192,9 @@ We implement the following subgradient algorithm in order to compute $z^{LD}$. W
 	\caption{Subgradient Algorithm for MaxCut}
 \end{algorithm}
 
+\subsection{Semi Definite Relaxation}\label{subsec:SDRelax}
+
+\section{Lower Bound Heuristic}
+\section{Computational Analysis}
+\section{Conclusion}
 \end{document}
