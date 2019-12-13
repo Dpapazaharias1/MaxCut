@@ -1,5 +1,6 @@
 import random
 import math
+import time
 from Graph import *
 
 class MaxCut_Heuristic:
@@ -13,6 +14,14 @@ class MaxCut_Heuristic:
     Sbar = []
     A = []
     bestSolution = []
+    time = 0
+    bestTime = 0
+    Runtime = 0
+    # ---- For saving Simulated Annealing Parameters
+    coolRate = 0
+    stopTime = 0
+    tempLength = 0
+    cMaxAccept = 0
 
     def initialize(self, inputfile):
         self.G.read(inputfile)
@@ -34,15 +43,15 @@ class MaxCut_Heuristic:
                 self.currentWeight += w_e
             elif self.A[i] == -1 and self.A[j] == 0: # i belngs to Sbar, j unassigned
                 self.A[j] = 1
-                self.currentWeight += w_e 
+                self.currentWeight += w_e
             elif self.A[j] == 1 and self.A[i] == 0: # j belongs to S, i unassigned
                 self.A[i] = -1
-                self.currentWeight += w_e 
+                self.currentWeight += w_e
             elif self.A[j] == -1 and self.A[i] == 0: # j belongs to Sbar, i unassigned
                 self.A[i] = 1
         self.bestWeight = self.currentWeight
         self.bestSolution = self.A[:]
-    
+
 
     def __swap(self, i): # Computes change in objective from switching which part of the cut i belongs
         c = 0
@@ -76,18 +85,23 @@ class MaxCut_Heuristic:
         self.A[j] = -self.A[j]
 
     def simulatedAnnealing(self, stopTemp=1, tempLength=1000, coolRate=0.99, cMaxAccept=-10):
+        self.stopTemp = stopTemp
+        self.tempLength = tempLength
+        self.coolRate = coolRate
+        self.cMaxAccept = cMaxAccept
         # If A is empty, run greedy solution to get initial sol
+        self.time = time.time()
         if not self.A:
             self.greedySolution()
-        
+
         print("Initial Objective: {}".format(self.currentWeight))
         print("Initial Solution: {}".format(self.A))
-        
+
         cMax = self.__findCMax()
         initialTemp = -cMax/math.log(-cMaxAccept)
         currentTemp = initialTemp
         V = [v for v in range(self.n) if self.A[v] != 0]
-        
+
         while currentTemp > stopTemp:
             for t in range(tempLength):
                 i = random.choice(V)
@@ -102,11 +116,13 @@ class MaxCut_Heuristic:
                     else:
                         pass # do nothing
                 if self.bestWeight < self.currentWeight:
-                    print("New incumbent: Swap ({},{}): DeltaC = {}, Best Sol = {}".format(i,j,costChange, self.currentWeight))
-                    print("Current Solution: {}".format(self.A))
+                    #print("New incumbent: Swap ({},{}): DeltaC = {}, Best Sol = {}".format(i,j,costChange, self.currentWeight))
+                    #print("Current Solution: {}".format(self.A))
                     self.bestWeight = self.currentWeight
                     self.bestSolution = self.A[:]
+                    self.bestTime = time.time() - self.time
             currentTemp = currentTemp * coolRate
+        self.Runtime = time.time() - self.time
 
 
 if __name__ == "__main__":
@@ -114,10 +130,9 @@ if __name__ == "__main__":
     abspath = os.path.abspath(__file__)
     dname = os.path.dirname(abspath)
     os.chdir(dname)
-    instance = "../dat/Graph_instance_n_10_d_0.2_s_1.dat"
+    instance = "../dat/Graph_instance_n_100_d_0.2_s_1.dat"
     H = MaxCut_Heuristic()
     H.initialize(instance)
     H.simulatedAnnealing()
     print("Best Objective: {}".format(H.bestWeight))
     print("Best Solution: {}".format(H.bestSolution))
-            
