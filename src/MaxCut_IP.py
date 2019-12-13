@@ -19,7 +19,7 @@ class MaxCut:
                 if i < j:
                     self.y[i, j] = self.model.addVar(vtype=GRB.BINARY, obj = self.G.adjMatrix[i][j], lb = 0, ub = 1,  name='edge_{}_{}'.format(i,j))
         #---- Model Parameters
-        self.model.TimeLimit = 600 # Set 10 minute limit
+        self.model.setParam('TimeLimit', 600) # Set 10 minute limit
         self.model.modelSense = GRB.MAXIMIZE
         self.model.update()
         #---- Constraints
