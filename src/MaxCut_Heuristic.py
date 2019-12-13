@@ -84,7 +84,7 @@ class MaxCut_Heuristic:
         self.A[i] = -self.A[i]
         self.A[j] = -self.A[j]
 
-    def simulatedAnnealing(self, stopTemp=1, tempLength=1000, coolRate=0.99, cMaxAccept=-10):
+    def simulatedAnnealing(self, stopTemp=1, tempLength=1000, coolRate=0.99, cMaxAccept=.50):
         self.stopTemp = stopTemp
         self.tempLength = tempLength
         self.coolRate = coolRate
@@ -94,11 +94,11 @@ class MaxCut_Heuristic:
         if not self.A:
             self.greedySolution()
 
-        print("Initial Objective: {}".format(self.currentWeight))
-        print("Initial Solution: {}".format(self.A))
+        #print("Initial Objective: {}".format(self.currentWeight))
+        #print("Initial Solution: {}".format(self.A))
 
         cMax = self.__findCMax()
-        initialTemp = -cMax/math.log(-cMaxAccept)
+        initialTemp = -cMax/math.log(-cMaxAccept*cMax)
         currentTemp = initialTemp
         V = [v for v in range(self.n) if self.A[v] != 0]
 
@@ -123,7 +123,7 @@ class MaxCut_Heuristic:
                     self.bestTime = time.time() - self.time
             currentTemp = currentTemp * coolRate
         self.Runtime = time.time() - self.time
-
+        print("Best Objective: {}".format(self.bestWeight))
 
 if __name__ == "__main__":
     import os

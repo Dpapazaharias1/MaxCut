@@ -55,7 +55,7 @@ if __name__ == "__main__":
         from MaxCut_Heuristic import MaxCut_Heuristic
         MCH = MaxCut_Heuristic()
         MCH.initialize(inputfile)
-        MCH.simulatedAnnealing()
+        MCH.simulatedAnnealing(cMaxAccept=0.10)
         if os.path.exists('./results/HeuristicSol.csv'):
             with open('./results/HeuristicSol.csv', 'a') as csvfile:
                 writer = csv.writer(csvfile, delimiter = ',')
