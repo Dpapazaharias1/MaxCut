@@ -116,8 +116,6 @@ class MaxCut_Heuristic:
                     else:
                         pass # do nothing
                 if self.bestWeight < self.currentWeight:
-                    #print("New incumbent: Swap ({},{}): DeltaC = {}, Best Sol = {}".format(i,j,costChange, self.currentWeight))
-                    #print("Current Solution: {}".format(self.A))
                     self.bestWeight = self.currentWeight
                     self.bestSolution = self.A[:]
                     self.bestTime = time.time() - self.time
@@ -127,10 +125,18 @@ class MaxCut_Heuristic:
 
 if __name__ == "__main__":
     import os
+    import sys
+    n = 10
+    d = 0.2
+    s = 1
+    if len(sys.argv) == 4:
+        n = sys.argv[1]
+        d = sys.argv[2]
+        s = sys.argv[3]
     abspath = os.path.abspath(__file__)
     dname = os.path.dirname(abspath)
     os.chdir(dname)
-    instance = "../dat/Graph_instance_n_100_d_0.2_s_1.dat"
+    instance = "../dat/Graph_instance_n_{}_d_{}_s_{}.dat".format(n,d,s)
     H = MaxCut_Heuristic()
     H.initialize(instance)
     H.simulatedAnnealing()

@@ -107,11 +107,22 @@ class Ellipsoid:
 
 if __name__ == "__main__":
     import os
-    import time
+    import sys
+    n = 10
+    d = 0.2
+    s = 1
+    if len(sys.argv) == 4:
+        n = sys.argv[1]
+        d = sys.argv[2]
+        s = sys.argv[3]
+    abspath = os.path.abspath(__file__)
+    dname = os.path.dirname(abspath)
+    os.chdir(dname)
+    instance = "../dat/Graph_instance_n_{}_d_{}_s_{}.dat".format(n,d,s)
+    #-----------------  
     SDP = Ellipsoid()
-    SDP.initialize('../dat/Graph_instance_n_15_d_0.8_s_9.dat')
+    SDP.initialize(instance)
     start = time.time()
     SDP.solve()
     print('Runtime: {}'.format(SDP.Runtime))
-    #print(SDP.objBest)
     print(SDP.objCurrent)
