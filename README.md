@@ -14,4 +14,18 @@
 | ```make ellipsoid``` | Compute Semi-Definite Program relaxation bound for all instances          |
 | ```make heuristic``` | Solve simulated annealing heuristic for all instances                     |
 
- If you prefer to run a specific instance for a method individually. Change directory to ```src``` and 
+ If you prefer to run a specific instance for a method use the following command
+
+```console
+foo@bar:~$ python ./src/<filename>.py n d s
+```
+Where `n`, `d`, and `s` correspond to the size of the instance, density and seed, respectively. The choices for ```<filename>``` are:
+
+
+
+| Filename                           | Result                                            |
+|------------------------------------|---------------------------------------------------|
+| ```MaxCut_IP.py```                 | Solve the IP                                      |
+| ```MaxCut_Ellipsoid.py```          | Compute Semi-Definite Program relaxation bound    |
+| ```make EigenvalueRelaxation.py``` | Compute eigenvalue relaxation and Lagrangian Dual |
+| ```make MaxCut_Heuristic.py```     | Compute the lower bound for Max Cut               |
