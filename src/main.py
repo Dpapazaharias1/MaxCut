@@ -47,7 +47,7 @@ if __name__ == "__main__":
         EV = EigenvalueRelaxation()
         EV.initialize(inputfile)
         EV.getEigenvalues()
-        bigM = nodes*2
+        bigM = 2*nodes
         seq = 2
         if os.path.exists('./results/LDBound.csv'):
             with open('./results/LDBound.csv', 'a') as csvfile:

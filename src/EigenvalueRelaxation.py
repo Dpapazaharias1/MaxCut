@@ -80,10 +80,19 @@ class EigenvalueRelaxation():
 
 if __name__ == "__main__":
     import os
+    import sys
+    n = 10
+    d = 0.2
+    s = 1
+    if len(sys.argv) == 4:
+        n = sys.argv[1]
+        d = sys.argv[2]
+        s = sys.argv[3]
     abspath = os.path.abspath(__file__)
     dname = os.path.dirname(abspath)
     os.chdir(dname)
-    instance = "../dat/Graph_instance_n_20_d_0.2_s_1.dat"
+    instance = "../dat/Graph_instance_n_{}_d_{}_s_{}.dat".format(n,d,s)
+    
     EV = EigenvalueRelaxation()
     EV.initialize(instance)
     EV.getEigenvalues()
@@ -92,4 +101,4 @@ if __name__ == "__main__":
     #----- Subgradient
     #stepFunction arguments(seq, stop, bigM, roe) --> seq = sequence number 1 or 2 from assignment. stop = stopping criteria for sequence loop
     # (optional)bigM = bigM value for sequence. (optional)roe = roe value for sequence 2
-    print("LD Bound: {}".format(EV.stepFunction(2)))
+    print("LD Bound: {}".format(EV.stepFunction(2, 2*EV.n)))
