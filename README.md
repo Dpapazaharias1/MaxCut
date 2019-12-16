@@ -27,5 +27,5 @@ Where `n`, `d`, and `s` correspond to the size of the instance, density and seed
 |------------------------------------|---------------------------------------------------|
 | ```MaxCut_IP.py```                 | Solve the IP                                      |
 | ```MaxCut_Ellipsoid.py```          | Compute Semi-Definite Program relaxation bound    |
-| ```make EigenvalueRelaxation.py``` | Compute eigenvalue relaxation and Lagrangian Dual |
-| ```make MaxCut_Heuristic.py```     | Compute the lower bound for Max Cut               |
+| ```EigenvalueRelaxation.py``` | Compute eigenvalue relaxation and Lagrangian Dual |
+| ```MaxCut_Heuristic.py```     | Compute the lower bound for Max Cut               |
