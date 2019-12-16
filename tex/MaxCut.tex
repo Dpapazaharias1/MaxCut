@@ -32,6 +32,7 @@
 \newtheorem{claim}{Claim}
 \theoremstyle{definition}
 \newtheorem{defn}{Definition}
+\newcommand{\matr}[1]{\mathbf{#1}}
 
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
@@ -193,6 +194,50 @@ We implement the following subgradient algorithm in order to compute $z^{LD}$. W
 \end{algorithm}
 
 \subsection{Semi Definite Relaxation}\label{subsec:SDRelax}
+The semi-definite relaxation of formulation 2 is expressed as follows: 
+
+\begin{align}
+    z^{*} = \frac{1}{4} max \quad & \sum_{i \in V} \sum_{j \in V} w_{ij}(1-Y_{ij}) \\
+    s.t \quad & Y_{ii} = 1, \quad i \in Y \\
+     & \matr{Y} \succeq 0
+\end{align}
+
+The formulation is relaxed by introducing the matrix $\matr{Y}$. The elements $Y_{ij}$ of this matrix correspond to the multiplication of the decision variables $z_{i}$ and $z_{j}$ from the original formulation. Additionally, the variables are relaxed such that $Y_{ij} \in \mathbb{R}$. Constraint (18) enforces the fact that $z_{i} = z_{i}$ in the original unrelaxed formulation, as the multiplication of 1 and 1 or -1 and -1 results in 1. This also makes sense conceptually, as the same node can't be in two different sides of the cut. Thus, we will maintain the diagonal of the matrix $\matr{Y}$ fixed during the solution of this formulation. Constraint (19), forces the values of $Y_{ij}$ variables to stay between -1 and 1, and ultimately converge close to either 1 or -1 in feasible solutions. 
+
+To solve the formulation, we implement the ellipsoid algorithm. The algorithm is generally efficient and effective for convex problems, such as the relaxed formulation. However, we know that its nature causes it to be slow in practice in many cases, as it can iterate between infeasible and feasible solutions for a large number of steps. We will discuss this further in our computational analysis. 
+
+The ellipsoid algorithm relies on affine transformations between a unit "ball", $B(y_{k},1)$, and ellipsoids $E(y_{k}, \matr{H_{k}})$. Notice, that the value $\mathbf{y}$ is the current proposed solution at iteration k. Ultimately, the algorithm works on each iteration and its current $\mathbf{y_{k}}$ in the space of $B(0, 1)$, and transforms new solutions in the ellipsoid space to continually shrink and shift the ellipsoids and converge to better, feasible solutions. At each iteration, if the current solution is infeasible, a separating cut is added to move the next $\mathbf{y_{k}}$ towards feasibility: if it is not PSD, the eigenvector associated with the most violating eigenvalue is used to calculate the direction to move in for $y_{k+1}$. If the solution is feasible, we move in the direction of the objective function's gradient.
+
+Suppose we define the feasible region for our semi-definite relaxation to be the set $K = \{y_{ij} : Y_{ii} = 1, Y_{ij} = Y_{ji}, Y \succeq 0, i \in V, j \in V\}$. In reality, when the algorithm is implement, we only need to maintaint a vector of variables $y_{i}, i \in V$, since the constraints $Y_{ii} = 1, Y_{ij} = Y_{ji}$ can be trivially disgarded without loss of generality, and the matrix $\matr{Y}$ can be constructed and converted back to the list $\mathbf{y}$ at every iteration. The algorithm is initialized by finding a value $R \in \mathbb{R}$ such that $K \subseteq B(0, R)$, and thus, our initial solution, $\mathbf{y_{0}}$, is the zero vector, and $\matr{Y}$ is the identity. Thus, we wish for our initial ellipsoid to be $B(0, R)$, so we initialize $\matr{H_{0}}$ to be $R^{2}\matr{Y}$. Thus, we iterate over the algorithm described earlier as follows: \\
+
+\begin{algorithm}[H]
+    \SetAlgoLined
+    \KwResult{Solution to Semi-Definite Relaxation}
+    $R$ $\gets$ $2n$\;
+    $\matr{Y_{0}}$ $\gets$ identity\;
+    $\mathbf{y_{0}} \gets \mathbf{0}$ \;
+    $\matr{H_{0}}$ $\gets$ $R^{2}\matr{Y}$\;
+    $\mathbf{g}$ $\gets$ gradient(z)\;
+    $\epsilon$ $\gets$ 0.001\;
+    $change$ $\gets$ 100\;
+    $k$ \gets 0\;
+    \While{change $>$ $\epsilon$}{
+        \eIf{$\matr{Y_{k}} \succeq 0$}{
+            $\mathbf{y_{k+1}}$ $\gets$ ellipsoidshift($\matr{Y_{k}}$, $\mathbf{g}$, $\matr{H_{k}}$) \;
+            $\matr{H_{k+1}}$ $\gets$ newH($\matr{Y_{k}}$, $\mathbf{g}$, $\matr{H_{k}}$) \;
+            }{
+            $\overline{g} \gets$ separatingcut(min\_eigenvector) \;
+            $\mathbf{y_{k+1}}$ $\gets$ ellipsoidshift($\matr{Y_{k}}$, $\overline{\mathbf{g}}$, $\matr{H_{k}}$) \;
+            $\matr{H_{k+1}}$ $\gets$ newH($\matr{Y_{k}}$, $\overline{\mathbf{g}}$, $\matr{H_{k}}$) \;
+            }
+        $k$ $\gets$ $k+1$ \;
+        $change$ $\gets$ $||\mathbf{y_{k+1}} - \mathbf{y_{k}}||$ \;
+    }
+    return $\mathbf{y}$ \;
+	\caption{Ellipsoid Algorithm for MaxCut.}
+\end{algorithm} 
+
+The side funtions ellipsoid shift, and new H, are implementations of the closed-form matrix operations from the project guidelines. The vector $\mathbf{g}$ remains constant, and is the gradient of the objective function. This is the direction we want to move in when our solution is already feasible. $\overline{\mathbf{g}}$ is calculated by taking the gradient of the most violating eigenvector in the function separatingcut.
 
 \section{Lower Bound Heuristic}
 \section{Computational Analysis}
