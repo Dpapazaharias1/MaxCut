@@ -15,8 +15,8 @@ LP:
 LD:
 	$(foreach var,$(DATFILES), python $(SRCPATH)/main.py LD $(var);)
 
-SDP:
-	$(foreach var,$(DATFILES), python $(SRCPATH)/main.py SDP $(var);)
+ellipsoid:
+	$(foreach var,$(DATFILES), python $(SRCPATH)/main.py ellipsoid $(var);)
 
 heuristic:
 	$(foreach var,$(DATFILES), python $(SRCPATH)/main.py heuristic $(var);)
