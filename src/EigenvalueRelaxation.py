@@ -1,4 +1,5 @@
 import numpy as np
+import time
 from Graph import *
 
 class EigenvalueRelaxation():
@@ -14,6 +15,8 @@ class EigenvalueRelaxation():
     uVector = []
     bigM = 18
     roe = 0.98
+    time = 0
+    Runtime = 0
 
     def initialize(self, inputfile):
         self.G.read(inputfile)
@@ -51,18 +54,27 @@ class EigenvalueRelaxation():
         zEV = (-0.25)*uSum + ((self.n/4)*evMax)
         return zEV, LUMatrix
 
-    def stepFunction(self, seq, stop, bigM = 18, roe = 0.98):
-    	self.bigM, self.roe = bigM , roe
-    	self.uVector = np.array([0 for i in range(self.n)])
-    	gVector = np.array([-0.25 for i in range(self.n)])
+    def stepFunction(self, seq, bigM, roe = 0.99):
+        self.time = time.time()
+        self.bigM, self.roe = bigM , roe
+        self.uVector = np.array([0 for i in range(self.n)])
+        gVector = np.array([-0.25 for i in range(self.n)])
+        k = 1
     	#Main Loop
-    	for k in range(0,stop):
-    		lagDual, LUMatrix = self.getlagrangianDual()
-    		j = np.argmax(np.diag(LUMatrix))
-    		gVector[j] = (self.n - 1)/4
-    		seqVal = self.getSequence(seq,k)
-    		self.uVector = self.uVector - (seqVal)*(np.divide(gVector,np.linalg.norm(gVector,2)))
-    	return lagDual
+        while True:
+            lagDual, LUMatrix = self.getlagrangianDual()
+            j = np.argmax(np.diag(LUMatrix))
+            gVector[j] = (self.n -1)/4
+            seqVal = self.getSequence(seq,k)
+            newVector = self.uVector - (seqVal)*(np.divide(gVector,np.linalg.norm(gVector,2)))
+            gap = np.linalg.norm((newVector - self.uVector),2)
+            #print(gap)
+            self.uVector = newVector
+            k = k + 1
+            if(gap < 0.01):
+                break
+        self.Runtime = time.time() - self.time
+        return lagDual
 
 
 
@@ -71,7 +83,7 @@ if __name__ == "__main__":
     abspath = os.path.abspath(__file__)
     dname = os.path.dirname(abspath)
     os.chdir(dname)
-    instance = "../dat/Graph_instance_n_10_d_0.2_s_1.dat"
+    instance = "../dat/Graph_instance_n_20_d_0.2_s_1.dat"
     EV = EigenvalueRelaxation()
     EV.initialize(instance)
     EV.getEigenvalues()
@@ -80,4 +92,4 @@ if __name__ == "__main__":
     #----- Subgradient
     #stepFunction arguments(seq, stop, bigM, roe) --> seq = sequence number 1 or 2 from assignment. stop = stopping criteria for sequence loop
     # (optional)bigM = bigM value for sequence. (optional)roe = roe value for sequence 2
-    print("LD Bound: {}".format(EV.stepFunction(2, 100, 33, 0.99)))
+    print("LD Bound: {}".format(EV.stepFunction(2)))

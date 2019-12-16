@@ -46,24 +46,23 @@ if __name__ == "__main__":
         print('Solving Eigenvalue Relaxation:')
         EV = EigenvalueRelaxation()
         EV.initialize(inputfile)
-        EV.getEigenvalueBound()
-        EV.getlagrangianDual()
-
-    elif sys.argv[1] == "ellipsoid":
-        print('Solving Ellipsoid:')
-        from MaxCut_Ellipsoid import Ellipsoid
-        MCE = Ellipsoid()
-        MCE.initialize(inputfile)
-        MCE.solve()
-        if os.path.exists('./results/Ellipsoid.csv'):
-            with open('./results/Ellipsoid.csv', 'a') as csvfile:
+        EV.getEigenvalues()
+        bigM = nodes*2
+        seq = 2
+        if os.path.exists('./results/LDBound.csv'):
+            with open('./results/LDBound.csv', 'a') as csvfile:
                 writer = csv.writer(csvfile, delimiter = ',')
-                writer.writerow([nodes, density, seed, MCE.objCurrent, MCE.Runtime])
+                writer.writerow([nodes, density, seed, EV.evMax, EV.getEigenvalueBound(), bigM, EV.stepFunction(seq,bigM), EV.Runtime])
         else:
-            with open('./results/Ellipsoid.csv', 'a') as csvfile:
+            with open('./results/LDBound.csv', 'a') as csvfile:
                 writer = csv.writer(csvfile, delimiter = ',')
-                writer.writerow(['n', 'd', 's', 'bound', 'time(s)'])
-                writer.writerow([nodes, density, seed, MCE.objCurrent, MCE.Runtime])
+                writer.writerow(['n', 'd', 's', 'maxEigenval', 'EigenvalueBound', 'bigM', 'LDBound','time(s)'])
+                writer.writerow([nodes, density, seed, EV.evMax, EV.getEigenvalueBound(), bigM, EV.stepFunction(seq,bigM), EV.Runtime])
+
+
+    elif sys.argv[1] == "SDP":
+        #from ellipsoid
+        print('Solving Semi-Definite Relaxation:')
 
     elif sys.argv[1] == "heuristic":
         from MaxCut_Heuristic import MaxCut_Heuristic
