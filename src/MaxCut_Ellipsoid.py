@@ -18,7 +18,7 @@ class Ellipsoid:
     R = 0
     Q = [] # List of eigenvectors for PSD constraints
     change = 100
-    epsilon = 0.01
+    epsilon = 0.001
     objCurrent = 0
     Runtime = 0
 
@@ -109,7 +109,7 @@ if __name__ == "__main__":
     import os
     import time
     SDP = Ellipsoid()
-    SDP.initialize('../dat/Graph_instance_n_10_d_0.2_s_2.dat')
+    SDP.initialize('../dat/Graph_instance_n_15_d_0.8_s_9.dat')
     start = time.time()
     SDP.solve()
     print('Runtime: {}'.format(SDP.Runtime))
