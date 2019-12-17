@@ -34,8 +34,11 @@ By default we set the parameters for each algorithm to those which produced the 
 
 ## Libraries Used
 
+* gurobipy
 * numpy
 * math
 * time
 * random
-*
+* sys
+* os
+* csv
