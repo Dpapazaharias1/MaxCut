@@ -7,6 +7,14 @@
 \BOOKMARK [2][-]{subsection.3.2}{Lagrangian Dual}{section.3}% 7
 \BOOKMARK [3][-]{subsubsection.3.2.1}{Subgradient Algorithm}{subsection.3.2}% 8
 \BOOKMARK [2][-]{subsection.3.3}{Semi Definite Relaxation}{section.3}% 9
-\BOOKMARK [1][-]{section.4}{Lower Bound Heuristic}{}% 10
-\BOOKMARK [1][-]{section.5}{Computational Analysis}{}% 11
-\BOOKMARK [1][-]{section.6}{Conclusion}{}% 12
+\BOOKMARK [1][-]{section.4}{Heuristic Solution}{}% 10
+\BOOKMARK [2][-]{subsection.4.1}{Greedy Initial Solution}{section.4}% 11
+\BOOKMARK [2][-]{subsection.4.2}{2-Swap Procedure}{section.4}% 12
+\BOOKMARK [2][-]{subsection.4.3}{Simulated Annealing}{section.4}% 13
+\BOOKMARK [1][-]{section.5}{Computational Study}{}% 14
+\BOOKMARK [2][-]{subsection.5.1}{Implementation Decisions}{section.5}% 15
+\BOOKMARK [3][-]{subsubsection.5.1.1}{Integer Program}{subsection.5.1}% 16
+\BOOKMARK [3][-]{subsubsection.5.1.2}{Lagrangian Dual Relaxation}{subsection.5.1}% 17
+\BOOKMARK [3][-]{subsubsection.5.1.3}{Ellipsoid Algorithm}{subsection.5.1}% 18
+\BOOKMARK [3][-]{subsubsection.5.1.4}{Simulated Annealing}{subsection.5.1}% 19
+\BOOKMARK [1][-]{section.6}{Conclusion}{}% 20

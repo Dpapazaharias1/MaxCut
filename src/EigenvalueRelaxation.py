@@ -14,7 +14,7 @@ class EigenvalueRelaxation():
     normEigenvectors =[]
     uVector = []
     bigM = 18
-    roe = 0.98
+    rho = 0.98
     time = 0
     Runtime = 0
 
@@ -43,7 +43,7 @@ class EigenvalueRelaxation():
     	if(val == 1):
     		return self.bigM/(k+1)
     	if(val == 2):
-    		return self.bigM*(self.roe**k)
+    		return self.bigM*(self.rho**k)
 
     def getlagrangianDual(self):
         uSum = np.sum(self.uVector)
@@ -54,9 +54,9 @@ class EigenvalueRelaxation():
         zEV = (-0.25)*uSum + ((self.n/4)*evMax)
         return zEV, LUMatrix
 
-    def stepFunction(self, seq, bigM, roe = 0.99):
+    def stepFunction(self, seq, bigM, rho = 0.99):
         self.time = time.time()
-        self.bigM, self.roe = bigM , roe
+        self.bigM, self.rho = bigM , rho
         self.uVector = np.array([0 for i in range(self.n)])
         gVector = np.array([-0.25 for i in range(self.n)])
         k = 1
@@ -99,6 +99,6 @@ if __name__ == "__main__":
     print("Maximum eigenvalue: {}".format(EV.evMax))
     print("Eigenvalue bound: {}".format(EV.getEigenvalueBound()))
     #----- Subgradient
-    #stepFunction arguments(seq, stop, bigM, roe) --> seq = sequence number 1 or 2 from assignment. stop = stopping criteria for sequence loop
-    # (optional)bigM = bigM value for sequence. (optional)roe = roe value for sequence 2
+    #stepFunction arguments(seq, stop, bigM, rho) --> seq = sequence number 1 or 2 from assignment. stop = stopping criteria for sequence loop
+    # (optional)bigM = bigM value for sequence. (optional)rho = rho value for sequence 2
     print("LD Bound: {}".format(EV.stepFunction(2, 2*EV.n)))
