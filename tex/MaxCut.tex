@@ -6,6 +6,7 @@
 \usepackage{amssymb}
 \usepackage{tikz}
 \usepackage{pgfplots}
+\usepackage{multirow}
 \usepackage{fancyhdr}
 \usepackage{enumitem}
 \usepackage{hyperref}
@@ -43,7 +44,7 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-    Maximum cut is a classic NP-Hard problem in combinatorial optimization. In this work we present several relaxations for the maximum cut problem. 
+    Maximum cut is a classic NP-Hard and considered to be one of the most difficult problems in combinatorial optimization. In this work we present several relaxations for the maximum cut problem. In addition to several well-known mathematical programs, we utilize the Laplacian matrix of $G$ in order to compute an eigenvalue bound and further strengthen it with a subgradient algorithm. We then implement the Ellipsoid algorithm on the semi-definite programming relaxation of max cut. Finally, we construct a 2-swap simulated annealing heuristic in order to construct feasible solutions of Max Cut.
 \end{abstract}
 
 \clearpage
@@ -129,7 +130,7 @@ The optimal value of $z^*$ in the max cut problem defined on graph $G=(V,E)$ sat
     \end{equation}
 \end{proof}
 
-
+We can further strengthen this bound by introducing a vector $\mathbf{u} \in \mathbb{R}^n$, which changes the diagonal elements of $L(G)$. Our goal is to reduce the size of the maximum eigenvalue and thus reducing the eigenvalue bound. We propose an upper bound involving $L(G)  + diag(\mathbf{u})$.
 
 \begin{prop}
     The optimal value of $z^*$ in the max cut problem defined on graph $G=(V,E)$ satisfies
@@ -371,5 +372,69 @@ Since the Ellipsoid algorithm can move to worse solutions throughout the algorit
 
 \subsubsection{Simulated Annealing}
 
+In our implementation of Simulated Annealing we found that slower cooling rates did not help us find much better solutions except for larger instances of Max Cut. For our comparison with the IP solution we selected $\alpha = 0.90, T_L = 500,$ and $\Delta_{accept} = 0.10 \cdot \Delta_{max}$.
+
+In addition, we found that for many instances that we ran that the best solution was found fairly early on in the algorithm. We believe that our neighborhood selection was perhaps too restrictive for this problem. In future work we will attempt several other neighborhood representations.
+
+\subsection{Results}
+
+
+\subsubsection{Upper Bound}
+
+Table \ref{tab:UB} shows the average gap and solution time for each relaxation method discussed in this paper. We can see that there is an obvious trade off between relaxation quality and computation time. We see that the Ellipsoid algorithm produces substantially tighter
+bounds for maximum cut, however it is computationally expensive. In fact, the algorithm takes much longer to solve than the integer program. For larger instances, the Lagrangian Dual bound performed the best when considering quality and solution time. 
+
+\begin{table}[h]
+	\small
+	\centering
+	\begin{tabular}{cc|cc|ccc|cc}
+		\hline
+		\multicolumn{2}{c|}{Instance} & \multicolumn{2}{c|}{LP Bound} & \multicolumn{3}{c|}{LD Bound} & \multicolumn{2}{c}{Ellipsoid} \\ \hline
+		n                     & d     & gap          & time(s)        & Eig gap  & LD gap  & time(s)  & gap          & time(s)        \\ \hline
+		\multirow{3}{*}{10}   & 0.2   & 0.045        & 0.003          & 0.398    & 0.146   & 0.139    & 0.005        & 3.218          \\
+		& 0.5   & 0.203        & 0.003          & 0.283    & 0.093   & 0.151    & 0.018        & 3.498          \\
+		& 0.8   & 0.278        & 0.001          & 0.141    & 0.059   & 0.141    & 0.017        & 3.625          \\ \hline
+		\multirow{3}{*}{15}   & 0.2   & 0.082        & 0.001          & 0.360    & 0.096   & 0.192    & 0.007        & 34.306         \\
+		& 0.5   & 0.253        & 0.001          & 0.250    & 0.079   & 0.202    & 0.024        & 34.740         \\
+		& 0.8   & 0.323        & 0.001          & 0.154    & 0.058   & 0.196    & 0.017        & 33.519         \\ \hline
+		\multirow{3}{*}{20}   & 0.2   & 0.115        & 0.001          & 0.361    & 0.084   & 0.259    & 0.017        & 177.274        \\
+		& 0.5   & 0.283        & 0.002          & 0.248    & 0.072   & 0.259    & 0.029        & 144.599        \\
+		& 0.8   & 0.355        & 0.002          & 0.152    & 0.055   & 0.243    & 0.022        & 145.973        \\ \hline
+		50                    & 0.8   & 0.416        & 0.014          & 0.141    & 0.062   & 1.487    & -            & -              \\ \hline
+		100                   & 0.2   & 0.319        & 0.012          & 0.236    & 0.185   & 13.104   & -            & -              \\ \hline
+	\end{tabular}
+	\caption{Upper bounds for the maximum cut problem}
+	\label{tab:UB}
+\end{table}
+\subsubsection{Lower Bound}
+
+Table \ref{tab:LB} shows that comparison for the heuristic solutions and the solutions obtained from our 0-1 integer programming formulation. We can see the heuristic is not very useful for smaller instances of Max Cut. However for larger instances it can quickly produce feasible solutions within comparable gap as the 0-1 formulation after 600 seconds of branch and bound.
+
+\begin{table}[h]
+	\small
+	\centering
+	\begin{tabular}{cc|cc|cc}
+		\hline
+		n                   & d   & Heuristic Gap & Heuristic Time & IP Gap & IP Time \\ \hline
+		\multirow{3}{*}{10} & 0.2 & 9.04\%        & 0.18           & 0.00\% & 0.01    \\
+		& 0.5 & 9.96\%        & 0.27           & 0.00\% & 0.01    \\
+		& 0.8 & 7.63\%        & 0.32           & 0.00\% & 0.02    \\ \hline
+		\multirow{3}{*}{15} & 0.2 & 5.63\%        & 0.26           & 0.00\% & 0.01    \\
+		& 0.5 & 7.72\%        & 0.41           & 0.00\% & 0.02    \\
+		& 0.8 & 5.63\%        & 0.47           & 0.00\% & 0.09    \\ \hline
+		\multirow{3}{*}{20} & 0.2 & 9.01\%        & 0.30           & 0.00\% & 0.01    \\
+		& 0.5 & 2.82\%        & 0.50           & 0.00\% & 0.07    \\
+		& 0.8 & 4.77\%        & 0.52           & 0.00\% & 0.91    \\ \hline
+		50                  & 0.8 & 11.12\%       & 2.08           & 9.28\% & 600.01  \\ \hline
+		100                 & 0.2 & 5.16\%        & 1.13           & 1.48\% & 600.01  \\ \hline
+	\end{tabular}
+	\caption{Heuristic and IP solutions for the maximum cut problem}
+	\label{tab:LB}
+\end{table}
+
 \section{Conclusion}
+
+In this work we provided several relaxations outside of the linear relaxation for the Maximum Cut problem as well as a simulated annealing heuristic for constructing good feasible solutions. In future work we would like to test more instances on larger graphs for which the IP formulation struggles more. In addition, we plan to revisit our implementation decisions to remove any inefficiencies and further tune the parameters. We are also interested in implementing this in an object-orientated language such as C++ to improve solution times.\\ 
+
+\noindent All work for this project can be found on GitHub at \url{https://github.com/Dpapazaharias1/MaxCut}
 \end{document}

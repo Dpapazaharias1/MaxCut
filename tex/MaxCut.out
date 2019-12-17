@@ -17,4 +17,7 @@
 \BOOKMARK [3][-]{subsubsection.5.1.2}{Lagrangian Dual Relaxation}{subsection.5.1}% 17
 \BOOKMARK [3][-]{subsubsection.5.1.3}{Ellipsoid Algorithm}{subsection.5.1}% 18
 \BOOKMARK [3][-]{subsubsection.5.1.4}{Simulated Annealing}{subsection.5.1}% 19
-\BOOKMARK [1][-]{section.6}{Conclusion}{}% 20
+\BOOKMARK [2][-]{subsection.5.2}{Results}{section.5}% 20
+\BOOKMARK [3][-]{subsubsection.5.2.1}{Upper Bound}{subsection.5.2}% 21
+\BOOKMARK [3][-]{subsubsection.5.2.2}{Lower Bound}{subsection.5.2}% 22
+\BOOKMARK [1][-]{section.6}{Conclusion}{}% 23
