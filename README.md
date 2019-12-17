@@ -31,3 +31,11 @@ Where `n`, `d`, and `s` correspond to the size of the instance, density and seed
 | ```MaxCut_Heuristic.py```     | Compute the lower bound for Max Cut               |
 
 By default we set the parameters for each algorithm to those which produced the best results in our computational study. Any adjustments must be made to the source code itself, we do not provide anyway to adjust that through the terminal.
+
+## Libraries Used
+
+* numpy
+* math
+* time
+* random
+*
